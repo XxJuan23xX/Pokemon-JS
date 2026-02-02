@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Combate</title>
+
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="battle.css"/>
+</head>
+<body class="battle-page">
+
+  <!-- INTRO (2 franjas + trainers) -->
+  <div id="intro" class="intro open" aria-hidden="false">
+    <div class="lane lane-top">
+      <div class="lane-lines"></div>
+      <img id="rivalSprite" class="trainer rival" src="images/blue2.png" alt="Rival">
+    </div>
+<div id="vs" class="vs">VS</div>
+    <div class="lane lane-bottom">
+      <div class="lane-lines"></div>
+      <img id="playerSprite" class="trainer player" src="images/red2.png" alt="Jugador">
+    </div>
+
+    <!-- Flash blanco -->
+    <div id="flash" class="flash"></div>
+    <!-- Pantalla negra -->
+    <div id="black" class="black"></div>
+  </div>
+
+  <!-- ESCENA DE COMBATE (después de la intro) -->
+  <main id="battleScene" class="battle-scene hidden">
+  <div class="battle-bg"></div>
+
+  <div class="arena">
+    <!-- Enemy -->
+    <div class="enemy-zone">
+      <img id="enemySprite" class="poke enemy" alt="Enemigo">
+    </div>
+
+    <!-- Player -->
+    <div class="player-zone">
+      <img id="playerSprite1" class="poke player" alt="Tu Pokémon">
+    </div>
+
+    <!-- HUDs -->
+    <div class="hud enemy-hud">
+      <div class="hud-top">
+        <div>
+          <div id="enemyName" class="hud-name">ENEMY</div>
+          <div id="enemyLvl" class="hud-lvl">Lv 50</div>
+        </div>
+      </div>
+      <div class="hp">
+        <div class="hp-bar"><div id="enemyHpFill" class="hp-fill"></div></div>
+        <div id="enemyHpText" class="hp-text">100 / 100</div>
+      </div>
+    </div>
+
+    <div class="hud player-hud">
+      <div class="hud-top">
+        <div>
+          <div id="playerName" class="hud-name">PLAYER</div>
+          <div id="playerLvl" class="hud-lvl">Lv 50</div>
+        </div>
+      </div>
+      <div class="hp">
+        <div class="hp-bar"><div id="playerHpFill" class="hp-fill"></div></div>
+        <div id="playerHpText" class="hp-text">100 / 100</div>
+      </div>
+    </div>
+
+    <!-- Dialog -->
+    <div class="dialog classic" id="dialog">
+  <!-- Panel izquierdo: mensajes -->
+  <div class="dialog-left">
+    <div id="dialogText" class="dialog-text">Preparando combate...</div>
+  </div>
+
+  <!-- Panel derecho: menú 2x2 -->
+  <div class="dialog-right" id="actionMenu">
+    <button class="menu-btn" data-action="fight">Juega</button>
+    <button class="menu-btn" data-action="items">Objetos</button>
+    <button class="menu-btn" data-action="pokemon">Pokemon</button>
+    <button class="menu-btn" data-action="run">Huir</button>
+  </div>
+
+  <!-- Subpanel (movimientos / equipo) -->
+  <div class="dialog-sub hidden" id="subPanel"></div>
+</div>
+
+  </div>
+
+</main>
+  <!-- Modal: Cambio de Pokémon -->
+<div id="switchModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-backdrop"></div>
+
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title" id="switchTitle">Elige un Pokémon</div>
+      
+    </div>
+
+    <div class="modal-body">
+  <div class="modal-subtitle" id="switchSubtitle">
+    Selecciona un Pokémon para salir al combate.
+  </div>
+
+  <div class="switch-panel">
+    <div id="switchList" class="switch-list"></div>
+  </div>
+
+  <div class="switch-info" id="switchInfo">
+    <div class="label">INFO</div>
+    <div class="switch-sprite-wrap">
+  <img id="switchInfoSprite" class="switch-sprite" alt="Sprite">
+</div>
+    <div id="switchInfoName" style="font-weight:900; text-transform:uppercase;">—</div>
+    <div id="switchInfoId" style="font-weight:800; opacity:.9;">—</div>
+
+    <div class="label">HP</div>
+    <div class="switch-hp"><div id="switchInfoHpFill"></div></div>
+    <div id="switchInfoHpText" style="font-weight:800;">—</div>
+
+    <div class="label">TIPOS</div>
+    <div id="switchInfoTypes" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+  </div>
+    <div class="switch-dialog" id="switchDialog">
+  Usa ↑ ↓ para elegir. Enter para confirmar.
+</div> 
+  <div class="switch-actions">
+    <button class="gba-btn" id="switchCancelBtn">Volver</button>
+    <button class="gba-btn primary" id="switchConfirmBtn">Elegir</button>
+  </div>
+</div>
+
+  </div>
+</div>
+<!-- GAME OVER MODAL (Derrota) -->
+<div id="gameOverModal" class="gba-modal hidden" role="dialog" aria-modal="true">
+  <div class="gba-backdrop"></div>
+
+  <div class="gba-card">
+    <div class="gba-head">
+      <div class="gba-title" id="gameOverTitle">¡HAS PERDIDO!</div>
+    </div>
+
+    <div class="gba-body">
+      <div class="gba-text" id="gameOverText">
+        No te quedan Pokémon. ¿Qué deseas hacer?
+      </div>
+
+      <div class="gba-menu" id="gameOverMenu">
+        <div class="gba-option" data-action="retry">
+          <span class="gba-caret">▶</span>
+          <span>Volver a jugar</span>
+        </div>
+        <div class="gba-option" data-action="menu">
+          <span class="gba-caret">▶</span>
+          <span>Menú</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- VICTORY BANNER -->
+<div id="victoryBanner" class="victory-banner hidden">
+  VICTORIA
+</div>
+<audio id="whooshAudio" src="sounds/battle_sd1.MP3" preload="auto"></audio>
+<audio id="victoryAudio" src="sounds/win.mp3" preload="auto"></audio>
+<audio id="battleBgm" src="sounds/battle.mp3" preload="auto" loop></audio>
+  <script src="battle.js"></script>
+
+</body>
+</html>
